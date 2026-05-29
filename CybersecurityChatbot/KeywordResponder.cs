@@ -173,6 +173,95 @@ namespace CybersecurityChatbot
             "next tip", "another one", "more please", "expand"
         };
 
+        //These methods are used to check if the user's input matches any of the follow-up phrases, and to generate a response based on the detected topic and sentiment.
+        public static string GetResponse(string input, MemoryStore memory)
+        {
+            string lower = InputValidator.Sanitise(input);
+            memory.MessageCount++;
+
+            // 1. Detect sentiment and build empathy prefix
+            string sentiment = SentimentDetector.Detect(lower);
+            memory.LastSentiment = sentiment;
+            string empathy = SentimentDetector.GetEmpathyLine(sentiment, memory.UserName);
+
+            // 2. Follow-up: continue the last topic without re-detecting keyword
+            if (IsFollowUp(lower) && !string.IsNullOrEmpty(memory.LastTopic))
+                return empathy + GetTopicResponse(memory.LastTopic, memory, isFollowUp: true);
+
+            // 3. General queries (greetings, meta questions, help)
+            string generalResponse = HandleGeneral(lower, memory);
+            if (generalResponse != null)
+                return empathy + generalResponse;
+
+            // 4. Keyword topic matching
+            string detectedTopic = DetectTopic(lower);
+            if (detectedTopic != null)
+            {
+                memory.RecordTopicInterest(TopicDisplayName(detectedTopic));
+                return empathy + GetTopicResponse(detectedTopic, memory, isFollowUp: false);
+            }
+
+            // 5. Fallback
+            return $"I'm not sure I understand that, {memory.UserName}.\n\n" +
+                   "Try asking me about: passwords, phishing, privacy, malware, " +
+                   "safe browsing, social engineering, or two-factor authentication.\n\n" +
+                   "Type 'help' to see the full list of topics.";
+        }
+
+        //This method checks if the user's input matches any of the predefined follow-up phrases, indicating they want more information on the last topic discussed.
+        private static string HandleGeneral(string lower, MemoryStore memory)
+        {
+            string name = memory.UserName;
+
+            if (lower.Contains("how are you") || lower.Contains("how r you"))
+                return $"I'm running at full security capacity, {name}!\n" +
+                       "How can I help you stay safe online today?";
+
+            if (lower.Contains("your name") || lower.Contains("who are you"))
+                return "I am CyberSecBot, your Cybersecurity Awareness Assistant.\n" +
+                       "I'm here to help South Africans stay safer online — one conversation at a time.";
+
+            if (lower.Contains("purpose") || lower.Contains("what can you do") || lower.Contains("what can i ask"))
+                return "My purpose is to educate you on cybersecurity threats and best practices.\n\n" +
+                       "I can help you with:\n" +
+                       "  • Passwords\n" +
+                       "  • Phishing & Scams\n" +
+                       "  • Privacy\n" +
+                       "  • Safe Browsing\n" +
+                       "  • Malware\n" +
+                       "  • Social Engineering\n" +
+                       "  • Two-Factor Authentication (2FA)\n\n" +
+                       "Type 'help' to see the full topic list at any time.";
+
+            if (lower.Contains("thank"))
+            {
+                string topics = memory.InterestedTopics.Count > 0
+                    ? $"\n\nTopics you've explored so far: {string.Join(", ", memory.InterestedTopics)}."
+                    : "";
+                return $"You're welcome, {name}! Staying informed is your best defence against cybercrime.{topics}";
+            }
+
+            if (lower == "hello" || lower == "hi" ||
+                lower.StartsWith("hello ") || lower.StartsWith("hi "))
+                return $"Hello again, {name}! What cybersecurity topic would you like to explore?";
+
+            if (lower.Contains("help"))
+                return "Here are the topics I can help you with:\n\n" +
+                       "  • passwords             • phishing / scams\n" +
+                       "  • privacy               • safe browsing\n" +
+                       "  • malware               • social engineering\n" +
+                       "  • 2fa / authentication\n\n" +
+                       "Just ask me anything about these topics — or type 'exit' to quit.";
+
+            // Periodic memory recall every 6 messages
+            if (memory.MessageCount % 6 == 0 && !string.IsNullOrEmpty(memory.FavouriteTopic))
+                return $"By the way, {name} — since you've been exploring {memory.FavouriteTopic}, " +
+                       "here's another tip you might find useful:\n\n" +
+                       GetRandomTipForTopic(memory.LastTopic);
+
+            return null; // Not a general query — proceed to keyword matching
+        }
+
         //This method detects the topic of the user's input by checking for keywords. It returns the topic name if found, or null if no topic is detected.
         private static string DetectTopic(string lower)
         {
@@ -184,6 +273,148 @@ namespace CybersecurityChatbot
             return null;
         }
 
+        //This method checks if the user's input matches any of the predefined follow-up phrases, indicating they want more information on the last topic discussed.
+        private static string GetTopicResponse(string topic, MemoryStore memory, bool isFollowUp)
+        {
+            memory.LastTopic = topic;
+            string recall = memory.GetRecallLine();
+            string followUpNote = isFollowUp ? "Here's more on that topic:\n\n" : "";
+
+            switch (topic)
+            {
+                case "password":
+                    memory.RecordTopicInterest("passwords");
+                    return followUpNote + recall + GetRandomItem(PasswordTips) +
+                           "\n\nI've noted that you're interested in passwords. " +
+                           "Ask me for 'another tip' anytime!";
+
+                case "phishing":
+                    memory.RecordTopicInterest("phishing");
+                    return followUpNote + recall + GetRandomItem(PhishingTips) +
+                           "\n\nWant another phishing tip? Just ask!";
+
+                case "privacy":
+                    memory.RecordTopicInterest("privacy");
+                    return followUpNote + recall + GetRandomItem(PrivacyTips) +
+                           "\n\nI'll remember that privacy matters to you.";
+
+                case "browsing":
+                    memory.RecordTopicInterest("safe browsing");
+                    return followUpNote + recall + GetRandomItem(SafeBrowsingTips) +
+                           "\n\nAsk me for 'another tip' to get more safe browsing advice.";
+
+                case "malware":
+                    memory.RecordTopicInterest("malware");
+                    return followUpNote + recall + MalwareResponse();
+
+                case "socialengineering":
+                    memory.RecordTopicInterest("social engineering");
+                    return followUpNote + recall + SocialEngineeringResponse();
+
+                case "2fa":
+                    memory.RecordTopicInterest("two-factor authentication");
+                    return followUpNote + recall + TwoFactorResponse();
+
+                default:
+                    return "I'm not sure about that specific topic. " +
+                           "Type 'help' to see what I can assist with.";
+            }
+        }
+
+        //This method checks if the user's input matches any of the predefined follow-up phrases, indicating they want more information on the last topic discussed.
+        private static bool IsFollowUp(string lower)
+        {
+            return FollowUpPhrases.Any(phrase => lower.Contains(phrase));
+        }
+
+        private static string GetRandomItem(List<string> list)
+        {
+            return list[RNum.Next(list.Count)];
+        }
+
+        private static string GetRandomTipForTopic(string topic)
+        {
+            switch (topic)
+            {
+                case "password": return GetRandomItem(PasswordTips);
+                case "phishing": return GetRandomItem(PhishingTips);
+                case "privacy": return GetRandomItem(PrivacyTips);
+                case "browsing": return GetRandomItem(SafeBrowsingTips);
+                default: return GetTopicResponse(topic, new MemoryStore(), false);
+            }
+        }
+
+        private static string TopicDisplayName(string topic)
+        {
+            switch (topic)
+            {
+                case "password": return "passwords";
+                case "phishing": return "phishing";
+                case "privacy": return "privacy";
+                case "browsing": return "safe browsing";
+                case "malware": return "malware";
+                case "socialengineering": return "social engineering";
+                case "2fa": return "two-factor authentication";
+                default: return topic;
+            }
+        }
+
+        private static string MalwareResponse()
+        {
+            return "Malware — What You Need to Know:\n\n" +
+                   "Common types:\n" +
+                   "  • Virus      — spreads by attaching to files and programmes.\n" +
+                   "  • Ransomware — encrypts your files and demands payment to unlock them.\n" +
+                   "  • Spyware    — secretly records your keystrokes and activity.\n" +
+                   "  • Trojan     — disguises itself as legitimate software.\n\n" +
+                   "How to protect yourself:\n" +
+                   "  1. Install reputable antivirus software and keep it updated.\n" +
+                   "  2. Never open email attachments from unknown senders.\n" +
+                   "  3. Only download software from official, trusted sources.\n" +
+                   "  4. Back up your important files regularly — both locally and in the cloud.\n" +
+                   "     If ransomware strikes, backups mean you won't lose everything.\n" +
+                   "  5. Keep your operating system and apps fully updated at all times.\n\n" +
+                   "Ask me 'tell me more' for additional malware prevention advice.";
+        }
+
+        private static string SocialEngineeringResponse()
+        {
+            return "Social Engineering — Hacking People, Not Technology:\n\n" +
+                   "Instead of breaking into systems, criminals manipulate people directly.\n\n" +
+                   "Common tactics:\n" +
+                   "  • Pretexting — creating a fake scenario to earn your trust.\n" +
+                   "    Example: 'I'm from IT support. I need your password to fix a critical issue.'\n\n" +
+                   "  • Baiting    — leaving a USB drive labelled 'Salary Increases 2024'\n" +
+                   "    in a car park, hoping a curious employee will plug it in.\n\n" +
+                   "  • Vishing    — voice phishing via scam phone calls.\n" +
+                   "    Attackers pose as bank staff, SARS officials, or tech support.\n\n" +
+                   "How to protect yourself:\n" +
+                   "  1. Always verify a caller's or visitor's identity before sharing anything.\n" +
+                   "  2. Legitimate IT staff will NEVER ask for your password.\n" +
+                   "  3. Trust your instincts — if something feels wrong, it probably is.\n" +
+                   "  4. Report suspicious contact to your IT or security team immediately.\n\n" +
+                   "Ask me 'tell me more' to continue exploring this topic.";
+        }
+
+        private static string TwoFactorResponse()
+        {
+            return "Two-Factor Authentication (2FA):\n\n" +
+                   "2FA adds a second layer of security on top of your password.\n\n" +
+                   "How it works — you need TWO things to log in:\n" +
+                   "  1. Something you KNOW  — your password.\n" +
+                   "  2. Something you HAVE  — a one-time code sent to your phone\n" +
+                   "     or generated by an authenticator app.\n\n" +
+                   "Why 2FA is so important:\n" +
+                   "Even if a criminal steals your password, they still cannot log in\n" +
+                   "without also having physical access to your phone.\n" +
+                   "This single step blocks the vast majority of account takeover attacks.\n\n" +
+                   "How to set it up:\n" +
+                   "  1. Go to the security settings on your account (Gmail, banking, etc.).\n" +
+                   "  2. Enable '2FA' or 'Two-Step Verification'.\n" +
+                   "  3. Use an authenticator app — it is more secure than SMS codes.\n" +
+                   "     Recommended apps: Google Authenticator, Microsoft Authenticator.\n\n" +
+                   "Ask me 'tell me more' for more 2FA guidance.";
+        }
 
     }
 }
