@@ -113,6 +113,7 @@ namespace CybersecurityChatbot
             { "passphrase",   "password" },
             { "credentials",  "password" },
             { "pin",          "password" },
+            {"pass",         "password" },
 
             // Phishing / Scams keywords
             { "phish",        "phishing" },
@@ -179,7 +180,7 @@ namespace CybersecurityChatbot
             string lower = InputValidator.Sanitise(input);
             memory.MessageCount++;
 
-            // 1. Detect sentiment and build empathy prefix
+            // 1. Detect sentiment and build empathy prefix to make the conversation between the user and bot seem natural and engaging
             string sentiment = SentimentDetector.Detect(lower);
             memory.LastSentiment = sentiment;
             string empathy = SentimentDetector.GetEmpathyLine(sentiment, memory.UserName);
@@ -201,7 +202,7 @@ namespace CybersecurityChatbot
                 return empathy + GetTopicResponse(detectedTopic, memory, isFollowUp: false);
             }
 
-            // 5. Fallback
+            // 5. Fallback (When the users enters keywords that don't match any topic, or if the input is unclear)
             return $"I'm not sure I understand that, {memory.UserName}.\n\n" +
                    "Try asking me about: passwords, phishing, privacy, malware, " +
                    "safe browsing, social engineering, or two-factor authentication.\n\n" +

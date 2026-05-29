@@ -30,6 +30,7 @@ namespace CybersecurityChatbot
             LastTopic = topic;
         }
 
+        // Records the sentiment of the user's last message for potential recall.
         public string GetRecallLine()
         {
             if (!string.IsNullOrEmpty(FavouriteTopic))
@@ -37,7 +38,7 @@ namespace CybersecurityChatbot
 
             return "";
         }
-
+        // Method to reset the memory store, clearing all stored information. This can be called at the end of a session or when starting fresh.
         public void Reset()
         {
             FavouriteTopic = "";

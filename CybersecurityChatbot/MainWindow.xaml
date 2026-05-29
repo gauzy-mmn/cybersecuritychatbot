@@ -93,7 +93,7 @@
             </Setter>
         </Style>
 
-        <!-- ── Chat input TextBox ── -->
+        <!-- ── input TextBox ── -->
         <Style x:Key="StyleInputBox" TargetType="TextBox">
             <Setter Property="Background"               Value="#1A1A2E"/>
             <Setter Property="Foreground"               Value="#E0E0E0"/>
@@ -130,6 +130,7 @@
 
 
     <Grid>
+        <!--Seperated window into 5 rows-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -137,13 +138,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
+          <!-- Row 0: HEADER-->
         <Border Grid.Row="0"
                 Background="{StaticResource ColBgHeader}"
                 BorderBrush="{StaticResource ColBorderFaint}"
                 BorderThickness="0,0,0,1"
                 Padding="18,14,18,12">
             <Grid>
+                
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>

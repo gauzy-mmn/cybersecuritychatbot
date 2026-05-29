@@ -8,6 +8,7 @@ namespace CybersecurityChatbot
 {
     public static class InputValidator
     {
+        // Validates that the input is not null, empty, or just whitespace, and has a reasonable length.
         public static bool isValid(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -18,7 +19,7 @@ namespace CybersecurityChatbot
 
             return true;
         }
-
+        // Additional validation for names: must be valid and not purely numeric.
         public static bool isNameValid(string name)
         {
             if (!isValid(name))
@@ -31,6 +32,7 @@ namespace CybersecurityChatbot
             return true;
         }
 
+        // Sanitises input by trimming whitespace and converting to lowercase for consistent processing.
         public static string Sanitise(string input)
         {
             return input?.Trim().ToLower() ?? "";

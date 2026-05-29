@@ -29,7 +29,7 @@ namespace CybersecurityChatbot
             }
             catch
             {
-                // If the audio file is missing or cannot be played, we silently ignore the error
+                // If the audio file is missing or cannot be played
             }
         }
 

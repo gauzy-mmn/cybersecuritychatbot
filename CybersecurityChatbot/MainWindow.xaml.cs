@@ -15,7 +15,7 @@ namespace CybersecurityChatbot
 
         private bool _awaitingName = true;  
         private bool _isTyping = false;
-
+        // Color palette and fonts for consistent styling and easy adjustments
         private static readonly SolidColorBrush BrCyan = Brush("#00FFFF");
         private static readonly SolidColorBrush BrGreen = Brush("#00FF88");
         private static readonly SolidColorBrush BrYellow = Brush("#FFD700");
@@ -172,14 +172,14 @@ namespace CybersecurityChatbot
             ChatPanel.Children.Add(bubble);
             ScrollToEnd();
         }
-
+        //Adds a bot message bubble without animation (used for quick replies and error messages)
         private void AppendBotBubble(string text, bool isWelcome = false)
         {
             var (bubble, _) = CreateBotBubble(text, isWelcome);
             ChatPanel.Children.Add(bubble);
             ScrollToEnd();
         }
-
+        //Reveals the bot's reply one character at a time to make it seem like it is typing
         private async Task AnimateBotMessage(string fullText, bool isWelcome = false)
         {
             _isTyping = true;
@@ -196,7 +196,7 @@ namespace CybersecurityChatbot
                 msgText.Text = built;
 
                 if (c == '\n') ScrollToEnd();
-                await Task.Delay(11); // Typing speed (ms per character)
+                await Task.Delay(11); // Typing speed in ms per character
             }
 
             ScrollToEnd();
@@ -284,7 +284,7 @@ namespace CybersecurityChatbot
                 Margin = new Thickness(0, 0, 0, 4)
             };
         }
-
+        // Creates a styled TextBlock for message content with consistent font, color, and spacing.
         private TextBlock MakeMessageText(string text, SolidColorBrush colour)
         {
             return new TextBlock

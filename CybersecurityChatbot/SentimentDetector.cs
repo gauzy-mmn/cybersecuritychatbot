@@ -8,7 +8,7 @@ namespace CybersecurityChatbot
 {
     public static class SentimentDetector
     {
-
+        
         private static readonly Dictionary<string, List<string>> SentimentKeywords =
            new Dictionary<string, List<string>>
        {
