@@ -5,72 +5,109 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CybersecurityChatbot"
         mc:Ignorable="d"
-        Title="CyberSecurity ChatBot v2.0" 
+        Title="CyberSecurity ChatBot v3.0" 
         Height="720" Width="980"
         MinHeight="620" MinWidth="820"
         WindowStartupLocation="CenterScreen"
         Background="#0D0D0D">
-    
+
     <Window.Resources>
+        <SolidColorBrush x:Key="BgDark"    Color="#0D0D0D"/>
+        <SolidColorBrush x:Key="BgPanel"   Color="#111111"/>
+        <SolidColorBrush x:Key="BgCard"    Color="#0A1628"/>
+        <SolidColorBrush x:Key="ColCyan"   Color="#00FFFF"/>
+        <SolidColorBrush x:Key="ColGreen"  Color="#00FF88"/>
+        <SolidColorBrush x:Key="ColYellow" Color="#FFD700"/>
+        <SolidColorBrush x:Key="ColRed"    Color="#FF5050"/>
+        <SolidColorBrush x:Key="ColText"   Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="ColMuted"  Color="#555555"/>
+        <SolidColorBrush x:Key="BotBg"     Color="#081018"/>
+        <SolidColorBrush x:Key="UserBg"    Color="#12123A"/>
 
-             <!-- Colors -->
-            <SolidColorBrush x:Key ="ColBgMain" Color="#0D0D0D"/>
-            <SolidColorBrush x:Key="ColBgHeader"    Color="#080808"/>
-            <SolidColorBrush x:Key="ColBgStatus"    Color="#111111"/>
-            <SolidColorBrush x:Key="ColBgInput"     Color="#1A1A2E"/>
-            <SolidColorBrush x:Key="ColBgUserBub"   Color="#12123A"/>
-            <SolidColorBrush x:Key="ColBgBotBub"    Color="#081018"/>
-            <SolidColorBrush x:Key="ColBgMemory"    Color="#091212"/>
-            <SolidColorBrush x:Key="ColCyan"        Color="#00FFFF"/>
-            <SolidColorBrush x:Key="ColGreen"       Color="#00FF88"/>
-            <SolidColorBrush x:Key="ColYellow"      Color="#FFD700"/>
-            <SolidColorBrush x:Key="ColRed"         Color="#FF5050"/>
-            <SolidColorBrush x:Key="ColTextMain"    Color="#E0E0E0"/>
-            <SolidColorBrush x:Key="ColTextMuted"   Color="#555555"/>
-            <SolidColorBrush x:Key="ColBorderCyan"  Color="#00FFFF"/>
-            <SolidColorBrush x:Key="ColBorderFaint" Color="#00FFFF33"/>
+        <!-- TabControl override -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background"          Value="#0D0D0D"/>
+            <Setter Property="BorderThickness"     Value="0"/>
+            <Setter Property="Padding"             Value="0"/>
+        </Style>
 
-            <!-- Send Button Style -->
-                <Style x:Key="StyleBtnSend" TargetType="Button">
-                    <Setter Property="Background"      Value="#00FFFF"/>
-                    <Setter Property="Foreground"      Value="#060606"/>
-                    <Setter Property="FontFamily"      Value="Consolas"/>
-                    <Setter Property="FontWeight"      Value="Bold"/>
-                    <Setter Property="FontSize"        Value="13"/>
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Cursor"          Value="Hand"/>
-                    <Setter Property="Padding"         Value="22,0"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd" Background="{TemplateBinding Background}"
+        <Style TargetType="TabItem">
+            <Setter Property="Background"          Value="#0A0A0A"/>
+            <Setter Property="Foreground"          Value="#555555"/>
+            <Setter Property="FontFamily"          Value="Consolas"/>
+            <Setter Property="FontSize"            Value="12"/>
+            <Setter Property="Padding"             Value="20,10"/>
+            <Setter Property="BorderThickness"     Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="#00FFFF22"
+                                BorderThickness="0,0,1,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background"     Value="#0D1A2A"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"    Value="#00FFFF44"/>
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="0,0,1,2"/>
+                                <Setter Property="Foreground"                      Value="#00FFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#AAAAAA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary button -->
+        <Style x:Key="BtnPrimary" TargetType="Button">
+            <Setter Property="Background"      Value="#00FFFF"/>
+            <Setter Property="Foreground"      Value="#060606"/>
+            <Setter Property="FontFamily"      Value="Consolas"/>
+            <Setter Property="FontWeight"      Value="Bold"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Padding"         Value="16,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
                                 CornerRadius="4" Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#00E0E0"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#00BBBB"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter TargetName="Bd" Property="Background" Value="#1A3333"/>
-                                        <Setter Property="Foreground" Value="#336666"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-        <!-- ── Secondary buttons (Clear) ── -->
-        <Style x:Key="StyleBtnSecondary" TargetType="Button">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#00E0E0"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#00BBBB"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Background" Value="#1A3333"/>
+                                <Setter Property="Foreground"                  Value="#336666"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Secondary button -->
+        <Style x:Key="BtnSecondary" TargetType="Button">
             <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="Foreground"      Value="#555555"/>
+            <Setter Property="Foreground"      Value="#888888"/>
             <Setter Property="FontFamily"      Value="Consolas"/>
             <Setter Property="FontSize"        Value="11"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush"     Value="#2A2A2A"/>
+            <Setter Property="BorderBrush"     Value="#333333"/>
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="Padding"         Value="12,0"/>
             <Setter Property="Template">
@@ -85,7 +122,7 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Foreground" Value="#CCCCCC"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="#555555"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#666666"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -93,32 +130,77 @@
             </Setter>
         </Style>
 
-        <!-- ── input TextBox ── -->
-        <Style x:Key="StyleInputBox" TargetType="TextBox">
+        <!-- Danger button (red) -->
+        <Style x:Key="BtnDanger" TargetType="Button" BasedOn="{StaticResource BtnSecondary}">
+            <Setter Property="Foreground"  Value="#FF5050"/>
+            <Setter Property="BorderBrush" Value="#FF505044"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"  Value="#2A0808"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FF5050"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Success button (green) -->
+        <Style x:Key="BtnSuccess" TargetType="Button" BasedOn="{StaticResource BtnSecondary}">
+            <Setter Property="Foreground"  Value="#00FF88"/>
+            <Setter Property="BorderBrush" Value="#00FF8844"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"  Value="#081A10"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#00FF88"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox input style -->
+        <Style x:Key="DarkInput" TargetType="TextBox">
             <Setter Property="Background"               Value="#1A1A2E"/>
             <Setter Property="Foreground"               Value="#E0E0E0"/>
             <Setter Property="CaretBrush"               Value="#00FFFF"/>
-            <Setter Property="BorderThickness"          Value="1"/>
             <Setter Property="BorderBrush"              Value="#00FFFF33"/>
+            <Setter Property="BorderThickness"          Value="1"/>
             <Setter Property="FontFamily"               Value="Consolas"/>
             <Setter Property="FontSize"                 Value="13"/>
-            <Setter Property="Padding"                  Value="12,0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding"                  Value="10,8"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border x:Name="Bd"
-                                Background="{TemplateBinding Background}"
+                        <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="4">
                             <ScrollViewer x:Name="PART_ContentHost"
-                                          Margin="{TemplateBinding Padding}"
-                                          VerticalAlignment="Center"/>
+                                          Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="#00FFFF"/>
+                                <Setter Property="BorderBrush" Value="#00FFFF"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -126,164 +208,383 @@
             </Setter>
         </Style>
 
+        <!-- DatePicker style -->
+        <Style TargetType="DatePicker">
+            <Setter Property="Background"  Value="#1A1A2E"/>
+            <Setter Property="Foreground"  Value="#E0E0E0"/>
+            <Setter Property="FontFamily"  Value="Consolas"/>
+            <Setter Property="FontSize"    Value="12"/>
+            <Setter Property="BorderBrush" Value="#00FFFF33"/>
+        </Style>
+
     </Window.Resources>
 
-
     <Grid>
-        <!--Seperated window into 5 rows-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <!-- Header -->
             <RowDefinition Height="*"/>
+            <!-- Tab content -->
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <!-- Status bar -->
         </Grid.RowDefinitions>
-          <!-- Row 0: HEADER-->
-        <Border Grid.Row="0"
-                Background="{StaticResource ColBgHeader}"
-                BorderBrush="{StaticResource ColBorderFaint}"
-                BorderThickness="0,0,0,1"
-                Padding="18,14,18,12">
+
+        <!-- ═══════════════════════════════════════ HEADER ════════════════════ -->
+        <Border Grid.Row="0" Background="#080808"
+                BorderBrush="#00FFFF22" BorderThickness="0,0,0,1"
+                Padding="18,12,18,10">
             <Grid>
-                
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
-                    <TextBlock FontFamily="Consolas"
-                     FontSize="9"
-                     Foreground="Aqua"
-                     LineHeight="12"
-                     xml:space="preserve">  ██████╗██╗   ██╗██████╗ ███████╗██████╗
+                    <TextBlock FontFamily="Consolas" FontSize="9" Foreground="#00FFFF"
+                               LineHeight="12" xml:space="preserve">  ██████╗██╗   ██╗██████╗ ███████╗██████╗
  ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗
  ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝
  ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗
  ╚██████╗   ██║   ██████╔╝███████╗██║  ██║
   ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝</TextBlock>
-                    <TextBlock Foreground="White"
-                               FontFamily="Consolas"
-                               FontSize="12.3"
-                               Margin="2,4,0,0">  CYBERSECURITY AWARENESS BOT  v2.0  |  Keeping South Africa Safe Online</TextBlock>
+                    <TextBlock Foreground="#304050" FontFamily="Consolas" FontSize="10" Margin="2,4,0,0">
+                        CYBERSECURITY AWARENESS BOT  v3.0  |  Keeping South Africa Safe Online
+                    </TextBlock>
                 </StackPanel>
-                <StackPanel Grid.Column=" 1" VerticalAlignment="Center">
-                    <Border Background="#001A1A"
-                            BorderBrush="#00FFFF55"
-                            BorderThickness="1"
-                            CornerRadius="3"
-                            Padding="10,5"
-                            Margin="0,0,0,6">
-                        <TextBlock Text="&#x25CF; ONLINE"
-                                   Foreground="#00FF88"
-                                   FontFamily="Consolas"
-                                   FontSize="10"
-                                   FontWeight="Bold"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <Border Background="#001A1A" BorderBrush="#00FFFF55"
+                            BorderThickness="1" CornerRadius="3"
+                            Padding="10,5" Margin="0,0,0,5">
+                        <TextBlock Text="● ONLINE" Foreground="#00FF88"
+                                   FontFamily="Consolas" FontSize="10" FontWeight="Bold"/>
                     </Border>
-                    <TextBlock x:Name="TxtUserBadge"
-                               Text="User: -"
-                               Foreground="#404040"
-                               FontFamily="Consolas"
-                               FontSize="10"
-                               HorizontalAlignment="Right"/>
-
+                    <TextBlock x:Name="TxtUserBadge" Text="User: —"
+                               Foreground="#404040" FontFamily="Consolas"
+                               FontSize="10" HorizontalAlignment="Right"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        
-        <!-- ROW 1: STATUS BAR -->
-        <Border Grid.Row="1"
-                Background="{StaticResource ColBgStatus}"
-                Padding="18,6">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name="TxtStatus"
-                           Text="Enter your name to begin..."
-                           Foreground="{StaticResource ColYellow}"
-                           FontFamily="Consolas"
-                           FontSize="15"/>
-                <TextBlock x:Name="TxtSentiment"
-                           Grid.Column="1"
-                           Text=""
-                           Foreground="#555555"
-                           FontFamily="Consolas"
-                           FontSize="11"/>
+        <!-- ═══════════════════════════════════════ TABS ══════════════════════ -->
+        <TabControl Grid.Row="1" x:Name="MainTabs" SelectionChanged="MainTabs_SelectionChanged">
+
+            <!-- ══════════════════════════════ TAB 1: CHAT ═══════════════════ -->
+            <TabItem Header="💬  CHAT">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Status bar -->
+                    <Border Grid.Row="0" Background="#111111" Padding="16,5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="TxtStatus" Text="Enter your name to begin..."
+                                       Foreground="#FFD700" FontFamily="Consolas" FontSize="11"/>
+                            <TextBlock x:Name="TxtSentiment" Grid.Column="1"
+                                       Text="" Foreground="#555555"
+                                       FontFamily="Consolas" FontSize="11"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Chat area -->
+                    <Border Grid.Row="1" Background="#0D0D0D">
+                        <ScrollViewer x:Name="ChatScroller"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel x:Name="ChatPanel"
+                                        Orientation="Vertical"
+                                        Margin="16,10,16,10"/>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Memory bar -->
+                    <Border Grid.Row="2" x:Name="MemoryPanel"
+                            Background="#091212" BorderBrush="#00FFFF22"
+                            BorderThickness="0,1,0,0" Padding="16,6"
+                            Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🧠 Memory  " Foreground="#00FFFF"
+                                       FontFamily="Consolas" FontSize="11"/>
+                            <TextBlock x:Name="TxtMemory" Foreground="#506850"
+                                       FontFamily="Consolas" FontSize="11" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Input -->
+                    <Border Grid.Row="3" Background="#111111"
+                            BorderBrush="#00FFFF22" BorderThickness="0,1,0,0"
+                            Padding="16,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtInput" Grid.Column="0"
+                                     Style="{StaticResource DarkInput}" Height="40"
+                                     KeyDown="TxtInput_KeyDown"
+                                     TextChanged="TxtInput_TextChanged"/>
+                            <Button x:Name="BtnSend" Grid.Column="1" Content="SEND"
+                                    Style="{StaticResource BtnPrimary}"
+                                    Height="40" Margin="8,0,0,0"
+                                    IsEnabled="False" Click="BtnSend_Click"/>
+                            <Button x:Name="BtnClear" Grid.Column="2" Content="CLEAR"
+                                    Style="{StaticResource BtnSecondary}"
+                                    Height="40" Margin="6,0,0,0"
+                                    Click="BtnClear_Click"/>
+                        </Grid>
+                    </Border>
                 </Grid>
-            </Border>
-        
-        
-        <!-- ROW 2: CHAT AREA -->
-        <Border Grid.Row="2" Background="{StaticResource ColBgMain}">
-            <ScrollViewer x:Name="ChatScroller"
-                          VerticalScrollBarVisibility="Auto"
-                          HorizontalScrollBarVisibility="Disabled"
-                          Padding="0,4,0,4">
-                <StackPanel x:Name="ChatPanel"
-                            Orientation="Vertical"
-                            Margin="18,8,18,8"/>
-            </ScrollViewer>
-        </Border>
+            </TabItem>
 
-        <!-- ROW 3: MEMORY BAR -->
-        <Border Grid.Row="3"
-                x:Name="MemoryPanel"
-                Background="{StaticResource ColBgMemory}"
-                BorderBrush="{StaticResource ColBorderFaint}"
-                BorderThickness="0,1,0,0"
-                Padding="18,7"
-                Visibility="Collapsed">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="&#x1F9E0; Memory  "
-                           Foreground="{StaticResource ColCyan}"
-                           FontFamily="Consolas"
-                           FontSize="11"/>
-                <TextBlock x:Name="TxtMemory"
-                           Foreground="#506850"
-                           FontFamily="Consolas"
-                           FontSize="11"
-                           TextWrapping="Wrap"/>
-            </StackPanel>
-        </Border>
+            <!-- ══════════════════════════════ TAB 2: TASKS ══════════════════ -->
+            <TabItem Header="📋  TASKS">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-        <!-- ROW 4: INPUT BAR -->
-        <Border Grid.Row="4"
-                Background="{StaticResource ColBgStatus}"
-                BorderBrush="{StaticResource ColBorderFaint}"
-                BorderThickness="0,1,0,0"
-                Padding="18,10">
+                    <!-- Add task form -->
+                    <Border Grid.Row="0" Background="#0A1628"
+                            BorderBrush="#00FFFF22" BorderThickness="1"
+                            CornerRadius="6" Padding="18,14" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="ADD NEW TASK" Foreground="#00FFFF"
+                                       FontFamily="Consolas" FontSize="12"
+                                       FontWeight="Bold" Margin="0,0,0,12"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Task Title" Foreground="#888888"
+                                               FontFamily="Consolas" FontSize="11" Margin="0,0,0,5"/>
+                                    <TextBox x:Name="TxtTaskTitle"
+                                             Style="{StaticResource DarkInput}" Height="36"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="Reminder Date (optional)" Foreground="#888888"
+                                               FontFamily="Consolas" FontSize="11" Margin="0,0,0,5"/>
+                                    <DatePicker x:Name="DpReminder" Height="36"
+                                                Background="#1A1A2E" Foreground="#E0E0E0"/>
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Text="Description" Foreground="#888888"
+                                       FontFamily="Consolas" FontSize="11" Margin="0,10,0,5"/>
+                            <TextBox x:Name="TxtTaskDesc" Style="{StaticResource DarkInput}"
+                                     Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <Button x:Name="BtnAddTask" Content="+ ADD TASK"
+                                        Style="{StaticResource BtnPrimary}"
+                                        Height="36" Click="BtnAddTask_Click"/>
+                                <TextBlock x:Name="TxtTaskStatus" Text=""
+                                           Foreground="#00FF88" FontFamily="Consolas"
+                                           FontSize="11" VerticalAlignment="Center"
+                                           Margin="14,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Task list header -->
+                    <Grid Grid.Row="1" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="YOUR TASKS" Foreground="#555555"
+                                   FontFamily="Consolas" FontSize="11"
+                                   VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Content="↻ REFRESH"
+                                Style="{StaticResource BtnSecondary}"
+                                Height="28" Click="BtnRefreshTasks_Click"/>
+                    </Grid>
+
+                    <!-- Task list -->
+                    <Border Grid.Row="2" Background="#0A0A0A"
+                            BorderBrush="#00FFFF11" BorderThickness="1" CornerRadius="6">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel x:Name="TaskListPanel" Margin="12,10,12,10"/>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- ══════════════════════════════ TAB 3: QUIZ ═══════════════════ -->
+            <TabItem Header="🎯  QUIZ">
+                <Grid Margin="30,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Progress bar area -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="TxtQuizProgress"
+                                       Text="Press 'Start Quiz' to begin"
+                                       Foreground="#555555" FontFamily="Consolas" FontSize="12"/>
+                            <TextBlock x:Name="TxtQuizScore"
+                                       Grid.Column="1" Text=""
+                                       Foreground="#00FFFF" FontFamily="Consolas"
+                                       FontSize="12" FontWeight="Bold"/>
+                        </Grid>
+                        <Border Background="#1A1A1A" Height="6" CornerRadius="3" Margin="0,8,0,0">
+                            <Border x:Name="QuizProgressBar" Background="#00FFFF"
+                                    HorizontalAlignment="Left" Width="0"
+                                    CornerRadius="3"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Question card -->
+                    <Border Grid.Row="1" x:Name="QuizQuestionCard"
+                            Background="#0A1628" BorderBrush="#00FFFF33"
+                            BorderThickness="1" CornerRadius="8"
+                            Padding="24,20" Margin="0,0,0,20"
+                            Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock x:Name="TxtQuizType" Text=""
+                                       Foreground="#00FFFF" FontFamily="Consolas"
+                                       FontSize="10" Margin="0,0,0,8"/>
+                            <TextBlock x:Name="TxtQuestion" Text=""
+                                       Foreground="#E0E0E0" FontFamily="Consolas"
+                                       FontSize="14" TextWrapping="Wrap"
+                                       LineHeight="22"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Answer buttons -->
+                    <StackPanel Grid.Row="2" x:Name="AnswerPanel"
+                                Margin="0,0,0,16" Visibility="Collapsed">
+                        <Button x:Name="BtnA" Height="44" Margin="0,0,0,8"
+                                Style="{StaticResource BtnSecondary}"
+                                Click="BtnAnswer_Click" Tag="0"
+                                HorizontalContentAlignment="Left" Padding="16,0"/>
+                        <Button x:Name="BtnB" Height="44" Margin="0,0,0,8"
+                                Style="{StaticResource BtnSecondary}"
+                                Click="BtnAnswer_Click" Tag="1"
+                                HorizontalContentAlignment="Left" Padding="16,0"/>
+                        <Button x:Name="BtnC" Height="44" Margin="0,0,0,8"
+                                Style="{StaticResource BtnSecondary}"
+                                Click="BtnAnswer_Click" Tag="2"
+                                HorizontalContentAlignment="Left" Padding="16,0"/>
+                        <Button x:Name="BtnD" Height="44"
+                                Style="{StaticResource BtnSecondary}"
+                                Click="BtnAnswer_Click" Tag="3"
+                                HorizontalContentAlignment="Left" Padding="16,0"/>
+                    </StackPanel>
+
+                    <!-- Feedback card -->
+                    <Border Grid.Row="3" x:Name="FeedbackCard"
+                            Background="#0A1A0A" BorderBrush="#00FF8844"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="16,12" Margin="0,0,0,16"
+                            Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock x:Name="TxtFeedbackResult" Text=""
+                                       FontFamily="Consolas" FontSize="13"
+                                       FontWeight="Bold" Margin="0,0,0,6"/>
+                            <TextBlock x:Name="TxtFeedbackExplanation" Text=""
+                                       Foreground="#AAAAAA" FontFamily="Consolas"
+                                       FontSize="12" TextWrapping="Wrap"/>
+                            <Button x:Name="BtnNextQuestion" Content="NEXT QUESTION ▶"
+                                    Style="{StaticResource BtnPrimary}"
+                                    Height="36" Margin="0,12,0,0"
+                                    HorizontalAlignment="Left"
+                                    Click="BtnNextQuestion_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Start / Restart button -->
+                    <StackPanel Grid.Row="4" HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <Button x:Name="BtnStartQuiz" Content="▶  START QUIZ"
+                                Style="{StaticResource BtnPrimary}"
+                                Height="48" Width="200"
+                                FontSize="14" Click="BtnStartQuiz_Click"/>
+                        <TextBlock x:Name="TxtFinalScore" Text=""
+                                   Foreground="#FFD700" FontFamily="Consolas"
+                                   FontSize="14" TextWrapping="Wrap"
+                                   TextAlignment="Center" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- ══════════════════════════ TAB 4: ACTIVITY LOG ═══════════════ -->
+            <TabItem Header="📜  ACTIVITY LOG">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Log toolbar -->
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="ACTIVITY LOG" Foreground="#00FFFF"
+                                       FontFamily="Consolas" FontSize="13"
+                                       FontWeight="Bold" VerticalAlignment="Center"/>
+                            <Border Background="#001A1A" BorderBrush="#00FFFF44"
+                                    BorderThickness="1" CornerRadius="3"
+                                    Padding="8,3" Margin="12,0,0,0">
+                                <TextBlock x:Name="TxtLogCount" Text="0 entries"
+                                           Foreground="#00FF88" FontFamily="Consolas"
+                                           FontSize="10"/>
+                            </Border>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="↻ REFRESH"
+                                Style="{StaticResource BtnSecondary}"
+                                Height="30" Click="BtnRefreshLog_Click"/>
+                    </Grid>
+
+                    <!-- Log entries list -->
+                    <Border Grid.Row="1" Background="#0A0A0A"
+                            BorderBrush="#00FFFF11" BorderThickness="1" CornerRadius="6">
+                        <ScrollViewer x:Name="LogScroller"
+                                      VerticalScrollBarVisibility="Auto">
+                            <StackPanel x:Name="LogPanel" Margin="14,10,14,10"/>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- ═══════════════════════════════════════ STATUS BAR ════════════════ -->
+        <Border Grid.Row="2" Background="#080808"
+                BorderBrush="#00FFFF11" BorderThickness="0,1,0,0"
+                Padding="18,5">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="TxtInput"
-                         Grid.Column="0"
-                         Style="{StaticResource StyleInputBox}"
-                         Height="42"
-                         KeyDown="TxtInput_KeyDown"
-                         TextChanged="TxtInput_TextChanged"/>
-                <Button x:Name="BtnSend"
-                        Grid.Column="1"
-                        Content="SEND"
-                        Style="{StaticResource StyleBtnSend}"
-                        Height="42"
-                        Margin="8,0,0,0"
-                        Click="BtnSend_Click"
-                        IsEnabled="False"/>
-                <Button x:Name="BtnClear"
-                        Grid.Column="2"
-                        Content="CLEAR"
-                        Style="{StaticResource StyleBtnSecondary}"
-                        Height="42"
-                        Margin="6,0,0,0"
-                        Click="BtnClear_Click"/>
+                <TextBlock x:Name="TxtGlobalStatus" Text="Ready"
+                           Foreground="#404040" FontFamily="Consolas" FontSize="10"/>
+                <TextBlock x:Name="TxtDbStatus" Grid.Column="1"
+                           Text="DB: checking..." Foreground="#404040"
+                           FontFamily="Consolas" FontSize="10"/>
             </Grid>
         </Border>
-
 
     </Grid>
 </Window>
