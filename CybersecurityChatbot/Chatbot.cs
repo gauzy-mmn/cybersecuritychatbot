@@ -17,7 +17,7 @@ namespace CybersecurityChatbot
         {
             BotName = "CyberSecBot";
             UserName = "";
-            Version = "2.0";
+            Version = "3.1";
         }
 
         public void PlayVoiceGreeting()
