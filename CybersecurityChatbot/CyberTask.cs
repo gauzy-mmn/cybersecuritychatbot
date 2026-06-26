@@ -11,7 +11,7 @@ namespace CybersecurityChatbot
     /// Represents a single cybersecurity task stored in the MySQL database.
     /// </summary>
 
-    internal class CyberTask
+    public class CyberTask
     {
         public int Id { get; set; }
         public string Title { get; set; }

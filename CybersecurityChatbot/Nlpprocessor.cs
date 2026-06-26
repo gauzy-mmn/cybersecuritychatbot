@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CybersecurityChatbot
 {
-    internal class Nlpprocessor
+    public static class Nlpprocessor
     {
 
         // ── Intent → keyword patterns dictionary ──────────────────────────────

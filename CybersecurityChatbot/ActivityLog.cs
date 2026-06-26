@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CybersecurityChatbot
 {
-    internal class ActivityLog
+    public static class ActivityLog
     {
 
         private static readonly List<(DateTime Time, string Description)> Entries

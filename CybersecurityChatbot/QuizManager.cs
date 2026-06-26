@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CybersecurityChatbot
 {
-    internal class QuizManager
+    public class QuizManager
     {
         // ── Question model ────────────────────────────────────────────────────
         public class QuizQuestion

@@ -33,7 +33,7 @@ namespace CybersecurityChatbot
         private const string Host = "localhost";
         private const string Database = "cybersecbot";
         private const string User = "root";
-        private const string Password = "yourpassword";
+        private const string Password = "GauzyPolcat321";
 
         private static string ConnectionString =>
             $"Server={Host};Database={Database};Uid={User};Pwd={Password};";
@@ -97,7 +97,7 @@ namespace CybersecurityChatbot
             }
             catch (Exception ex) { Console.WriteLine($"[DB] AddTask: {ex.Message}"); return -1; }
         }
-
+        
         public static List<CyberTask> GetAllTasks()
         {
             var tasks = new List<CyberTask>();

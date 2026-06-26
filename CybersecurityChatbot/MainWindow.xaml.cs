@@ -17,8 +17,8 @@ namespace CybersecurityChatbot
     public partial class MainWindow : Window
     {
         // ── Session objects ───────────────────────────────────────────────────
-        private readonly ChatBot _bot = new ChatBot();
-        private readonly Memory _memory = new Memory();
+        private readonly Chatbot _bot = new Chatbot();
+        private readonly MemoryStore _memory = new MemoryStore();
         private readonly QuizManager _quiz = new QuizManager();
 
         // ── UI state ──────────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ namespace CybersecurityChatbot
 
             _bot.PlayVoiceGreeting();
             await Task.Delay(200);
-            await AnimateBotMessage(_bot.GetWelcomeMessage(), isWelcome: true);
+            await AnimateBotMessage(_bot.WelcomeMessage(), isWelcome: true);
             TxtInput.Focus();
         }
 
@@ -131,7 +131,7 @@ namespace CybersecurityChatbot
                 TxtStatus.Text = $"Chatting as {_memory.UserName}  |  'help' for topics  |  'exit' to quit";
                 TxtStatus.Foreground = BrGreen;
                 AppendUserBubble(raw.Trim());
-                await AnimateBotMessage(_bot.GetGreetingMessage(_memory.UserName), isWelcome: true);
+                await AnimateBotMessage(_bot.GreetingMessage(_memory.UserName), isWelcome: true);
                 return;
             }
 
@@ -147,7 +147,7 @@ namespace CybersecurityChatbot
             }
 
             // ── NLP intent detection ──────────────────────────────────────────
-            string intent = NLPProcessor.DetectIntent(raw);
+            string intent = Nlpprocessor.DetectIntent(raw);
             string response;
 
             switch (intent)
@@ -185,7 +185,7 @@ namespace CybersecurityChatbot
                     break;
 
                 default:
-                    response = ResponseHandler.GetResponse(raw, _memory);
+                    response = KeywordResponder.GetResponse(raw, _memory);
                     break;
             }
 
@@ -202,9 +202,9 @@ namespace CybersecurityChatbot
             if (!_dbConnected)
                 return "I can't save tasks right now — the database is offline. Please check your MySQL connection.";
 
-            string title = NLPProcessor.ExtractTaskTitle(raw);
-            string description = NLPProcessor.BuildTaskDescription(title);
-            DateTime? reminder = NLPProcessor.ExtractReminderDate(raw);
+            string title = Nlpprocessor.ExtractTaskTitle(raw);
+            string description = Nlpprocessor.BuildTaskDescription(title);
+            DateTime? reminder = Nlpprocessor.ExtractReminderDate(raw);
 
             int id = DatabaseManager.AddTask(title, description, reminder);
             if (id < 0)
@@ -222,8 +222,8 @@ namespace CybersecurityChatbot
 
         private string HandleReminderIntent(string raw)
         {
-            DateTime? date = NLPProcessor.ExtractReminderDate(raw);
-            string title = NLPProcessor.ExtractTaskTitle(raw);
+            DateTime? date = Nlpprocessor.ExtractReminderDate(raw);
+            string title = Nlpprocessor.ExtractTaskTitle(raw);
 
             if (!_dbConnected)
                 return "Database is offline — I can't save reminders right now.";
@@ -231,7 +231,7 @@ namespace CybersecurityChatbot
             if (!date.HasValue)
                 return "I'd love to set a reminder! Could you tell me when? For example: 'in 3 days' or 'in 1 week'.";
 
-            int id = DatabaseManager.AddTask(title, NLPProcessor.BuildTaskDescription(title), date);
+            int id = DatabaseManager.AddTask(title, Nlpprocessor.BuildTaskDescription(title), date);
             if (id > 0)
             {
                 ActivityLog.LogReminderSet(title, date.Value);
@@ -295,7 +295,7 @@ namespace CybersecurityChatbot
 
             DateTime? reminder = DpReminder.SelectedDate;
             if (string.IsNullOrWhiteSpace(desc))
-                desc = NLPProcessor.BuildTaskDescription(title);
+                desc = Nlpprocessor.BuildTaskDescription(title);
 
             int id = DatabaseManager.AddTask(title, desc, reminder);
             if (id > 0)
@@ -762,6 +762,21 @@ namespace CybersecurityChatbot
 
         private static SolidColorBrush B(string hex)
             => new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
+
+        private void TxtTaskTitle_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void TxtTaskTitle_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void TxtTaskDesc_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 
 }
